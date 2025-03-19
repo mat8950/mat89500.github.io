@@ -3,13 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste de mes applications</title>
+    <title>Wiki des Applications</title>
+    <!-- Intégration des bibliothèques CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css" />
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Liste des applications testées</h1>
-    <div id="app-list"></div>
-
+    <header>
+        <h1 class="animate__animated animate__fadeInDown">Wiki des Applications</h1>
+    </header>
+    
+    <div class="container">
+        <aside>
+            <h2>Catégories</h2>
+            <ul id="category-list">
+                <li class="hvr-underline-from-left">Développement</li>
+                <li class="hvr-underline-from-left">Multimédia</li>
+                <li class="hvr-underline-from-left">Utilitaires</li>
+            </ul>
+        </aside>
+        
+        <main>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Rechercher une application...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div id="app-list">
+                <!-- Exemple d'application -->
+                <div class="app-item animate__animated animate__zoomIn">
+                    <h3>Nom de l'application</h3>
+                    <p>Description de l'application.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 - Wiki des Applications | Design amélioré</p>
+    </footer>
+    
     <script src="script.js"></script>
 </body>
 </html>
