@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     container.appendChild(allAppsContainer);
     
     let allApps = [];
+    let sections = {}; // Stocke les sections pour basculer facilement
 
     // Mode sombre/clair
     themeToggle.addEventListener("click", () => {
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             categoryItem.textContent = data.title;
             categoryItem.addEventListener("click", () => {
                 document.querySelectorAll(".category").forEach(el => el.style.display = "none");
-                document.getElementById(`category-${category}`).style.display = "block";
+                sections[category].style.display = "block";
             });
             categoryList.appendChild(categoryItem);
 
@@ -36,10 +37,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             section.className = "category animate__animated animate__fadeIn";
             section.id = `category-${category}`;
             section.innerHTML = `<h2>${data.title}</h2><ul>` +
-                data.apps.map(app => `<li class="app-item"><strong>${app.name}</strong> - ${app.description}</li>`).join("") +
+                data.apps.map(app => `<li class="app-item" data-name="${app.name.toLowerCase()}"><strong>${app.name}</strong> - ${app.description}</li>`).join("") +
                 `</ul>`;
             section.style.display = "none";
             container.appendChild(section);
+            sections[category] = section;
 
             // Ajout des applications dans la liste globale
             allApps = allApps.concat(data.apps);
@@ -49,18 +51,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Afficher la première catégorie par défaut
-    document.querySelector(".category").style.display = "block";
+    if (Object.keys(sections).length > 0) {
+        sections[categories[0]].style.display = "block";
+    }
 
     // Ajout de toutes les applications triées alphabétiquement
     allApps.sort((a, b) => a.name.localeCompare(b.name));
     const allAppsList = document.getElementById("all-apps-list");
-    allAppsList.innerHTML = allApps.map(app => `<li class="app-item"><strong>${app.name}</strong> - ${app.description}</li>`).join("");
+    allAppsList.innerHTML = allApps.map(app => `<li class="app-item" data-name="${app.name.toLowerCase()}"><strong>${app.name}</strong> - ${app.description}</li>`).join("");
 
     // Filtrage des applications
     searchInput.addEventListener("input", function () {
         const searchValue = searchInput.value.toLowerCase();
         document.querySelectorAll(".app-item").forEach(item => {
-            item.style.display = item.textContent.toLowerCase().includes(searchValue) ? "block" : "none";
+            item.style.display = item.dataset.name.includes(searchValue) ? "block" : "none";
         });
     });
 });
