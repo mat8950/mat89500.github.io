@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!response.ok) throw new Error(`Impossible de charger ${category}.json`);
             const data = await response.json();
 
+            // Vérifier si la catégorie contient des applications
+            if (!data.apps || data.apps.length === 0) continue;
+
             // Création d'une entrée dans le menu de navigation
             const categoryItem = document.createElement("li");
             categoryItem.textContent = data.title;
@@ -46,19 +49,23 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Ajout des applications dans la liste globale
             allApps = allApps.concat(data.apps);
         } catch (error) {
-            console.error(error);
+            console.error(`Erreur lors du chargement des applications pour ${category}:`, error);
         }
     }
 
-    // Afficher la première catégorie par défaut
+    // Afficher la première catégorie par défaut s'il y en a
     if (Object.keys(sections).length > 0) {
         sections[categories[0]].style.display = "block";
     }
 
     // Ajout de toutes les applications triées alphabétiquement
-    allApps.sort((a, b) => a.name.localeCompare(b.name));
-    const allAppsList = document.getElementById("all-apps-list");
-    allAppsList.innerHTML = allApps.map(app => `<li class="app-item" data-name="${app.name.toLowerCase()}"><strong>${app.name}</strong> - ${app.description}</li>`).join("");
+    if (allApps.length > 0) {
+        allApps.sort((a, b) => a.name.localeCompare(b.name));
+        const allAppsList = document.getElementById("all-apps-list");
+        allAppsList.innerHTML = allApps.map(app => `<li class="app-item" data-name="${app.name.toLowerCase()}"><strong>${app.name}</strong> - ${app.description}</li>`).join("");
+    } else {
+        allAppsContainer.innerHTML += "<p>Aucune application trouvée.</p>";
+    }
 
     // Filtrage des applications
     searchInput.addEventListener("input", function () {

@@ -31,18 +31,23 @@ main {
 .search-container {
     position: relative;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #search {
-    width: 100%;
-    padding: 10px;
+    width: 80%;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
+    background-color: #2E2E2E;
+    color: white;
 }
 
 .search-icon {
     position: absolute;
-    right: 10px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     color: #aaa;
@@ -55,46 +60,49 @@ main {
 
 #category-list li {
     padding: 10px;
-    background-color: #fff;
+    background-color: #4CAF50;
+    color: white;
     margin-bottom: 10px;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
+    text-align: center;
 }
 
 #category-list li:hover {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #45A049;
+    transform: scale(1.05);
 }
 
 .category {
     display: none;
     padding: 15px;
-    background-color: white;
+    background-color: #FFF;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
 }
 
 .app-item {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    margin: 10px 0;
+    background-color: #F8F9FA;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
 }
 
 .app-item:hover {
-    transform: scale(1.02);
+    transform: scale(1.03);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 footer {
     text-align: center;
-    padding: 15px;
+    padding: 10px;
     background-color: #4CAF50;
     color: white;
-    margin-top: 20px;
+    font-size: 14px;
 }
 
 /* Mode sombre */
@@ -112,4 +120,10 @@ footer {
 .dark-mode header,
 .dark-mode footer {
     background-color: #2C3E50;
+}
+
+.dark-mode #search {
+    background-color: #444;
+    color: white;
+    border: 1px solid #666;
 }
