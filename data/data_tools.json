@@ -1,0 +1,15 @@
+{
+    "title": "Outils de traitement des données",
+    "apps": [
+        { 
+            "name": "OpenRefine", 
+            "description": "Un outil puissant pour nettoyer et transformer des données", 
+            "url": "https://openrefine.org/"
+        },
+        { 
+            "name": "KNIME", 
+            "description": "Plateforme d'analyse de données et d'automatisation du machine learning", 
+            "url": "https://www.knime.com/"
+        }
+    ]
+}
