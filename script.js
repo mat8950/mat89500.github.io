@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     const categoryList = document.getElementById("category-list");
     const searchInput = document.getElementById("search");
     const themeToggle = document.getElementById("theme-toggle");
+    const allAppsContainer = document.createElement("div");
+    allAppsContainer.id = "all-apps";
+    allAppsContainer.innerHTML = "<h2>Toutes les applications</h2><ul id='all-apps-list'></ul>";
+    container.appendChild(allAppsContainer);
+    
+    let allApps = [];
 
     // Mode sombre/clair
     themeToggle.addEventListener("click", () => {
@@ -34,6 +40,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 `</ul>`;
             section.style.display = "none";
             container.appendChild(section);
+
+            // Ajout des applications dans la liste globale
+            allApps = allApps.concat(data.apps);
         } catch (error) {
             console.error(error);
         }
@@ -41,6 +50,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Afficher la première catégorie par défaut
     document.querySelector(".category").style.display = "block";
+
+    // Ajout de toutes les applications triées alphabétiquement
+    allApps.sort((a, b) => a.name.localeCompare(b.name));
+    const allAppsList = document.getElementById("all-apps-list");
+    allAppsList.innerHTML = allApps.map(app => `<li class="app-item"><strong>${app.name}</strong> - ${app.description}</li>`).join("");
 
     // Filtrage des applications
     searchInput.addEventListener("input", function () {
