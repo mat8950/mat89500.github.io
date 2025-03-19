@@ -1,0 +1,8 @@
+{
+    "title": "Développement",
+    "apps": [
+        { "name": "VS Code", "description": "Un éditeur de code puissant" },
+        { "name": "Docker", "description": "Gestion de conteneurs" },
+        { "name": "Git", "description": "Gestion de version" }
+    ]
+}
