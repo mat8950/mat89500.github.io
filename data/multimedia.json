@@ -1,7 +1,17 @@
 {
     "title": "Multimédia",
     "apps": [
-        { "name": "VLC", "description": "Lecteur multimédia" },
-        { "name": "GIMP", "description": "Éditeur d'images" }
+        { 
+            "name": "VLC",
+            "description": "Lecteur multimédia",
+            "image": "images/VLC.png",
+            "tags": ["video", "player"]
+        },
+        { 
+            "name": "GIMP", 
+            "description": "Éditeur d'images",
+            "image": "images/GIMP.png",
+            "tags": ["image", "edition"]
+        }
     ]
 }

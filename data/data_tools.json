@@ -4,12 +4,16 @@
         { 
             "name": "OpenRefine", 
             "description": "Un outil puissant pour nettoyer et transformer des données", 
-            "url": "https://openrefine.org/"
+            "url": "https://openrefine.org/",
+            "image": "images/docker.png",
+            "tags": ["conteneurs", "virtualisation"]
         },
         { 
             "name": "KNIME", 
             "description": "Plateforme d'analyse de données et d'automatisation du machine learning", 
-            "url": "https://www.knime.com/"
+            "url": "https://www.knime.com/",
+            "image": "images/docker.png",
+            "tags": ["conteneurs", "virtualisation"]
         }
     ]
 }

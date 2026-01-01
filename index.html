@@ -3,46 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wiki des Applications</title>
-    <!-- Intégration des bibliothèques CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css" />
+    <title>Mes Marque-pages</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1 class="animate__animated animate__fadeInDown">Wiki des Applications</h1>
+        <h1>Marque-pages</h1>
+        <div class="header-controls">
+            <input type="text" id="search" placeholder="Rechercher dans les marque-pages...">
+            <button id="theme-toggle" title="Changer de thème">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
     </header>
-    
+
     <div class="container">
-        <aside>
-            <h2>Catégories</h2>
-            <ul id="category-list">
-                <li class="hvr-underline-from-left">Développement</li>
-                <li class="hvr-underline-from-left">Multimédia</li>
-                <li class="hvr-underline-from-left">Utilitaires</li>
-            </ul>
+        <aside class="sidebar">
+            <h2>Dossiers</h2>
+            <div id="folder-tree"></div>
         </aside>
-        
-        <main>
-            <div class="search-container">
-                <input type="text" id="search" placeholder="Rechercher une application...">
-                <i class="fas fa-search search-icon"></i>
-            </div>
-            <div id="app-list">
-                <!-- Exemple d'application -->
-                <div class="app-item animate__animated animate__zoomIn">
-                    <h3>Nom de l'application</h3>
-                    <p>Description de l'application.</p>
-                </div>
+
+        <main class="content">
+            <div id="breadcrumb"></div>
+            <div id="bookmarks-grid"></div>
+            <div id="empty-state" style="display: none;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+                <p>Aucun marque-page trouvé</p>
             </div>
         </main>
     </div>
-    
-    <footer>
-        <p>&copy; 2025 - Wiki des Applications | Design amélioré</p>
-    </footer>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

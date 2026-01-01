@@ -1,0 +1,31 @@
+# Claude Code settings (local configuration)
+.claude/
+
+# Docker files (not needed for GitHub Pages)
+Dockerfile
+compose.yml
+nginx.conf
+
+# Old data files (no longer used)
+data/
+
+# Images (if not needed)
+images/
+
+# Development files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
