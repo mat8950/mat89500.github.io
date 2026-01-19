@@ -381,15 +381,27 @@ function createBookmarkCard(bookmark) {
 // Initialize theme toggle
 function initThemeToggle() {
     const toggle = document.getElementById('theme-toggle');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && prefersDark)) {
-        document.body.classList.add('dark-mode');
+    if (!toggle) {
+        console.error('Theme toggle button not found!');
+        return;
+    }
+
+    // Nettoyer l'ancienne classe dark-mode si présente
+    document.body.classList.remove('dark-mode');
+
+    // Restaurer le thème sauvegardé
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
     }
 
     toggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
     });
 }
 
