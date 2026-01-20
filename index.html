@@ -52,12 +52,13 @@
     <!-- Audio Visualizer -->
     <canvas id="audio-visualizer"></canvas>
 
-    <header>
+    <header role="banner">
         <h1>Marque-pages</h1>
         <div class="header-controls">
-            <input type="text" id="search" placeholder="Rechercher...">
-            <button id="theme-toggle" title="Changer de thème">
-                <svg width="20" height="20" viewBox="0 0 20 20">
+            <label for="search" class="visually-hidden">Rechercher des marque-pages</label>
+            <input type="text" id="search" placeholder="Rechercher..." aria-label="Rechercher des marque-pages">
+            <button id="theme-toggle" title="Changer de thème" aria-label="Basculer entre mode clair et sombre">
+                <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill="currentColor"/>
                 </svg>
             </button>
@@ -65,16 +66,16 @@
     </header>
 
     <div class="container">
-        <aside class="sidebar">
-            <h2>Dossiers</h2>
-            <div id="folder-tree"></div>
+        <aside class="sidebar" role="navigation" aria-label="Navigation des dossiers">
+            <h2 id="folders-heading">Dossiers</h2>
+            <div id="folder-tree" role="tree" aria-labelledby="folders-heading"></div>
         </aside>
 
-        <main class="content">
-            <div id="breadcrumb"></div>
-            <div id="bookmarks-grid"></div>
-            <div id="empty-state" style="display: none;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <main class="content" role="main" aria-label="Liste des marque-pages">
+            <nav id="breadcrumb" aria-label="Fil d'Ariane"></nav>
+            <div id="bookmarks-grid" role="list" aria-label="Marque-pages"></div>
+            <div id="empty-state" style="display: none;" role="status" aria-live="polite">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                 </svg>
                 <p>Aucun marque-page trouvé</p>
@@ -355,8 +356,6 @@
         const visualizerCanvas = document.getElementById('audio-visualizer');
         const visualizerCtx = visualizerCanvas.getContext('2d');
 
-        audio.volume = 0.45;
-
         function resizeVisualizer() {
             visualizerCanvas.width = window.innerWidth;
             visualizerCanvas.height = 40;
@@ -364,65 +363,128 @@
         resizeVisualizer();
         window.addEventListener('resize', resizeVisualizer);
 
-        let audioContext, analyser, dataArray, isPlaying = false;
+        let audioContext, analyser, source, dataArray, isPlaying = false;
+        let audioContextInitialized = false;
 
         // ===== PERSISTANCE ÉTAT =====
         const STORAGE_KEY_AUDIO = 'audioEnabled';
         const STORAGE_KEY_SCROLL = 'scrollPosition';
+        const STORAGE_KEY_VOLUME = 'audioVolume';
 
-        // Restaurer position de scroll
+        // Restaurer positions de scroll (page, sidebar, contenu)
         const savedScroll = localStorage.getItem(STORAGE_KEY_SCROLL);
+        const savedSidebarScroll = localStorage.getItem('sidebarScroll');
+        const savedContentScroll = localStorage.getItem('contentScroll');
+
         if (savedScroll) {
             window.scrollTo(0, parseInt(savedScroll));
         }
 
-        // Sauvegarder position de scroll
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem(STORAGE_KEY_SCROLL, window.scrollY.toString());
+        // Restaurer scroll sidebar et contenu après chargement
+        window.addEventListener('load', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+
+            if (savedSidebarScroll && sidebar) {
+                sidebar.scrollTop = parseInt(savedSidebarScroll);
+            }
+            if (savedContentScroll && content) {
+                setTimeout(() => {
+                    content.scrollTop = parseInt(savedContentScroll);
+                }, 200);
+            }
         });
 
-        // Volume fixé à 45%
-        volumeSlider.style.display = 'none';
+        // Sauvegarder positions de scroll
+        window.addEventListener('beforeunload', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+
+            localStorage.setItem(STORAGE_KEY_SCROLL, window.scrollY.toString());
+            if (sidebar) localStorage.setItem('sidebarScroll', sidebar.scrollTop.toString());
+            if (content) localStorage.setItem('contentScroll', content.scrollTop.toString());
+        });
+
+        // Restaurer le volume sauvegardé (ou 45% par défaut)
+        const savedVolume = localStorage.getItem(STORAGE_KEY_VOLUME);
+        if (savedVolume) {
+            audio.volume = parseFloat(savedVolume);
+            volumeSlider.value = parseFloat(savedVolume) * 100;
+        } else {
+            audio.volume = 0.45;
+            volumeSlider.value = 45;
+        }
+
+        // Sauvegarder le volume quand il change
+        volumeSlider.addEventListener('input', () => {
+            const volume = volumeSlider.value / 100;
+            audio.volume = volume;
+            localStorage.setItem(STORAGE_KEY_VOLUME, volume.toString());
+        });
 
         function initAudioContext() {
-            if (!audioContext) {
+            if (audioContextInitialized) return;
+
+            try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
-                const source = audioContext.createMediaElementSource(audio);
+                source = audioContext.createMediaElementSource(audio);
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
                 analyser.fftSize = 256;
                 dataArray = new Uint8Array(analyser.frequencyBinCount);
+                audioContextInitialized = true;
+                console.log('AudioContext initialisé avec succès');
+            } catch (e) {
+                console.error('Erreur initialisation AudioContext:', e);
             }
         }
 
         function drawVisualizer() {
-            if (!isPlaying) return;
+            if (!isPlaying || !analyser) return;
             requestAnimationFrame(drawVisualizer);
             analyser.getByteFrequencyData(dataArray);
-            visualizerCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-            visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+            const isLightMode = document.body.classList.contains('light-mode');
+
+            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
             const barWidth = visualizerCanvas.width / dataArray.length;
             for (let i = 0; i < dataArray.length; i++) {
                 const barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
                 const x = i * barWidth;
                 const y = visualizerCanvas.height - barHeight;
                 const opacity = 0.1 + (dataArray[i] / 255) * 0.4;
-                visualizerCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+
+                if (isLightMode) {
+                    visualizerCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
+                } else {
+                    visualizerCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                }
                 visualizerCtx.fillRect(x, y, barWidth - 1, barHeight);
             }
         }
 
         // Fonction pour démarrer l'audio
         function startAudio() {
+            // S'assurer que l'AudioContext est initialisé
             initAudioContext();
+
+            // Reprendre l'AudioContext s'il est suspendu
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
             audio.play().then(() => {
                 audioToggle.textContent = 'PAUSE';
                 audioToggle.classList.add('playing');
                 isPlaying = true;
                 localStorage.setItem(STORAGE_KEY_AUDIO, 'true');
                 drawVisualizer();
-            }).catch(e => console.log('Audio play failed:', e));
+                console.log('Audio démarré');
+            }).catch(e => {
+                console.error('Échec lecture audio:', e);
+            });
         }
 
         // Fonction pour arrêter l'audio
@@ -444,43 +506,26 @@
             }
         });
 
-        // Vérifier état précédent de l'audio
-        const wasAudioEnabled = localStorage.getItem(STORAGE_KEY_AUDIO) === 'true';
+        // Autoplay au premier clic/touche sur la page (une seule fois)
+        let audioInitialized = false;
 
-        // Autoplay au premier clic/touche
-        function autoplayOnInteraction(e) {
-            if (e.target === audioToggle) return; // Ignorer si c'est le bouton
+        function autoplayOnInteraction() {
+            if (isPlaying || audioInitialized) return;
+            audioInitialized = true;
             startAudio();
             document.removeEventListener('click', autoplayOnInteraction);
             document.removeEventListener('keydown', autoplayOnInteraction);
         }
 
-        if (wasAudioEnabled) {
-            // Si audio était activé, essayer autoplay immédiat puis sur interaction
-            setTimeout(() => {
-                if (!isPlaying) {
-                    initAudioContext();
-                    audio.play().then(() => {
-                        audioToggle.textContent = 'PAUSE';
-                        audioToggle.classList.add('playing');
-                        isPlaying = true;
-                        localStorage.setItem(STORAGE_KEY_AUDIO, 'true');
-                        drawVisualizer();
-                    }).catch(() => {
-                        // Autoplay bloqué, attendre interaction
-                        document.addEventListener('click', autoplayOnInteraction);
-                        document.addEventListener('keydown', autoplayOnInteraction);
-                    });
-                }
-            }, 100);
-        } else {
-            // Premier usage ou audio désactivé
-            document.addEventListener('click', autoplayOnInteraction);
-            document.addEventListener('keydown', autoplayOnInteraction);
-        }
+        // Écouter uniquement si l'audio n'a jamais été initialisé dans cette session
+        document.addEventListener('click', autoplayOnInteraction);
+        document.addEventListener('keydown', autoplayOnInteraction);
 
+        // Raccourcis clavier
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'm' || e.key === 'M') audio.muted = !audio.muted;
+            if (e.key === 'm' || e.key === 'M') {
+                audio.muted = !audio.muted;
+            }
             if (e.key === ' ' && e.target === document.body) {
                 e.preventDefault();
                 audioToggle.click();
